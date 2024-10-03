@@ -1,9 +1,24 @@
 import { Image } from "react-native";
 
+import React,{useState, useEffect} from 'react';
+
+
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { Text, View } from "react-native";
 
 export default function HomeScreen() {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const url = "http://localhost:8080/api/mangas/oderOne"
+
+  useEffect(() => {
+    fetch(url)
+      .then(resp => resp.json())
+      .then((json) => setData(json))
+      .catch((error)=> console.error(error))
+      .finally(() => setLoading(false))
+  }, [])
   return (
     <ParallaxScrollView
       //Cette partie là est le header
@@ -51,7 +66,21 @@ export default function HomeScreen() {
     >
       {/*Cette partie constitue le centre de la page d'accueil*/}
       <View className="gap-2 mb-2">
-        <Text className="text-lg font-semibold">
+           {
+        loading ? (<Text>Loading...</Text>) : (
+          data.map((mangas) => {
+            return (
+              <View>
+                <Text>{mangas.title}</Text>
+                <Text>{mangas.summary}</Text>
+
+            </View>
+            )
+          })
+        )
+      }  
+       
+        {/* <Text className="text-lg font-semibold">
           <a href="">
             MANGA
             <svg
@@ -70,8 +99,9 @@ export default function HomeScreen() {
               />
             </svg>
           </a>
-        </Text>
+        </Text> */}
       </View>
+      
       {/* <View className="gap-2 mb-2"> */}
       <Text className="text-lg font-semibold">
         <a href="">
@@ -194,3 +224,51 @@ export default function HomeScreen() {
     </ParallaxScrollView>
   );
 }
+// import React,{useState, useEffect} from 'react';
+// import { Text, View, StyleSheet } from 'react-native';
+
+// export default function App() {
+//   const [data, setData] = useState([])
+//   const [loading, setLoading] = useState(true)
+
+//   const url = "http://localhost:8080/api/mangas/nine"
+
+//   useEffect(() => {
+//     fetch(url)
+//       .then(resp => resp.json())
+//       .then((json) => setData(json))
+//       .catch((error)=> console.error(error))
+//       .finally(() => setLoading(false))
+//   }, [])
+
+
+//   return (
+//     <View style={styles.container}>
+//       {
+//         loading ? (<Text>Loading...</Text>) : (
+//           data.map((post) => {
+//             return (
+//               <View>
+//                 <Text style={styles.title}>{post.title}</Text>
+//                 <Text>{post.body}</Text>
+//             </View>
+//             )
+//           })
+//         )
+//       }      
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     backgroundColor: '#ecf0f1',
+//     padding: 8,
+//   },
+//   title: {
+//     fontSize: 30,
+//     fontWeight: 'bold'
+//   },
+// });
